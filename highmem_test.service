@@ -14,7 +14,7 @@ Environment="DOTNET_TC_QuickJit=0"
 Environment="DOTNET_TieredCompilation=0"
 Type=notify
 RemainAfterExit=no
-ExecStart=/home/ubuntu/highmem_test/bin/Release/linux-x64/publish/TapAgent
+ExecStart=/home/ubuntu/highmem_test/bin/Release/linux-x64/publish/
 WorkingDirectory=/home/ubuntu/highmem_test
 KillMode=process
 Restart=on-failure
