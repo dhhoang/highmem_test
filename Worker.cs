@@ -36,6 +36,9 @@ namespace highmem_test
                 try
                 {
                     await DoRequestAsync(stoppingToken);
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                     await Task.Delay(2000, stoppingToken);
                 }
                 catch (OperationCanceledException)
