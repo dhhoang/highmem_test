@@ -1,7 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -64,12 +68,28 @@ namespace highmem_test
 
         private async Task<ArticleResponse> QueryAsync(CancellationToken stopToken)
         {
+            var buf = new byte[1024];
+            var hmacBuffer = new byte[32];
+            _random.NextBytes(hmacBuffer);
+            _random.NextBytes(buf);
+            ToHmac(hmacBuffer, buf, hmacBuffer);
+
             var query = _queries[_random.Next(_queries.Length)];
             using var request = new HttpRequestMessage(HttpMethod.Get, $"/search?q=title:{query}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "12345");
 
             using var response = await _httpClient.SendAsync(request, stopToken);
             var data = await response.Content.ReadFromJsonAsync<ArticleResponse>();
             return data;
+        }
+
+        private static void ToHmac(ReadOnlySpan<byte> key, ReadOnlySpan<byte> input, Span<byte> destination)
+        {
+            Span<byte> buf = stackalloc byte[32];
+
+            var result = HMACSHA256.TryHashData(key, input, buf, out var bytesWritten);
+            Debug.Assert(result && bytesWritten == 32);
+            buf.CopyTo(destination);
         }
     }
 }
