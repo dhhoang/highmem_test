@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -33,17 +33,23 @@ namespace highmem_test
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var buffer = new byte[4096];
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
                 try
                 {
+                    using var handle = File.OpenHandle("/var/log/daemon.log");
+                    var nRead = await RandomAccess.ReadAsync(handle, buffer, 0, stoppingToken);
+                    _logger.LogInformation("Read {ByteCount} bytes", nRead);
+
                     await DoRequestAsync(stoppingToken);
 
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
-                    await Task.Delay(2000, stoppingToken);
+                    GC.Collect();
+                    await Task.Delay(1000, stoppingToken);
                 }
                 catch (OperationCanceledException)
                 {
