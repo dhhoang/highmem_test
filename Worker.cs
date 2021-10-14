@@ -33,13 +33,13 @@ namespace highmem_test
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var buffer = new byte[4096];
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
                 try
                 {
+                    var buffer = new byte[4096];
                     using var handle = File.OpenHandle("/var/log/daemon.log");
                     var nRead = await RandomAccess.ReadAsync(handle, buffer, 0, stoppingToken);
                     _logger.LogInformation("Read {ByteCount} bytes", nRead);
