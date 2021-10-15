@@ -1,22 +1,10 @@
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using highmem_test;
 
-namespace highmem_test;
-
-class Program
-{
-    public static async Task<int> Main(string[] args)
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
     {
-        IHost host = Host.CreateDefaultBuilder(args)
-            .ConfigureServices(services =>
-            {
-                services.AddHostedService<Worker>();
-            })
-            .UseSystemd()
-            .Build();
+        services.AddHostedService<Worker>();
+    })
+    .Build();
 
-        await host.RunAsync();
-        return 0;
-    }
-}
+await host.RunAsync();

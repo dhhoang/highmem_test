@@ -7,12 +7,9 @@
 Description=High memory test
 
 [Service]
-Environment="MALLOC_MMAP_THRESHOLD_=8192"
+Environment="MALLOC_MMAP_THRESHOLD_=1048576"
 Environment="DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1"
-Environment="DOTNET_gcConcurrent=0"
-Environment="DOTNET_TC_QuickJit=0"
-Environment="DOTNET_TieredCompilation=0"
-Type=notify
+Type=simple
 RemainAfterExit=no
 ExecStart=/home/ubuntu/highmem_test/bin/Release/linux-x64/publish/
 WorkingDirectory=/home/ubuntu/highmem_test

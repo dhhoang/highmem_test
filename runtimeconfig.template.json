@@ -1,0 +1,6 @@
+﻿{
+  "configProperties": {
+    "System.Runtime.TieredCompilation": false,
+    "System.Runtime.TieredCompilation.QuickJit": false
+  }
+}
