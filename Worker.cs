@@ -34,13 +34,20 @@ public class Worker : BackgroundService
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            using var response = await _httpClient.GetAsync("https://api.github.com/users/dhhoang");
-            //_logger.LogInformation("Response code {ResponseCode}", response.StatusCode);
-            await Task.Delay(1000, cancellationToken);
+            try
+            {
+                using var response = await _httpClient.GetAsync("https://api.github.com/users/dhhoang", cancellationToken);
+                //_logger.LogInformation("Response code {ResponseCode}", response.StatusCode);
+                await Task.Delay(1000, cancellationToken);
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
         }
     }
 }
