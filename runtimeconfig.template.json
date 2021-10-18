@@ -1,5 +1,6 @@
 ﻿{
   "configProperties": {
+    "System.GC.Concurrent": false,
     "System.Runtime.TieredCompilation": false,
     "System.Runtime.TieredCompilation.QuickJit": false
   }
