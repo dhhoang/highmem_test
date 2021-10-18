@@ -15,7 +15,7 @@ public class Worker : BackgroundService
         var tasks = new Task[5];
         for (var i = 0; i < tasks.Length; i++)
         {
-            tasks[i] = MakeHttpRequest(stoppingToken);
+            tasks[i] = MakeRequestTask(stoppingToken);
         }
 
         while (!stoppingToken.IsCancellationRequested)
@@ -30,14 +30,14 @@ public class Worker : BackgroundService
         await Task.WhenAll(tasks);
     }
 
-    private async Task MakeHttpRequest(CancellationToken cancellationToken)
+    private async Task MakeRequestTask(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
                 using var response = await _httpClient.GetAsync("https://api.github.com/users/dhhoang", cancellationToken);
-                //_logger.LogInformation("Response code {ResponseCode}", response.StatusCode);
+                _logger.LogInformation("Response code {ResponseCode}", response.StatusCode);
                 await Task.Delay(1000, cancellationToken);
 
                 GC.Collect();
